@@ -22,6 +22,13 @@ public class DefaultUserManager implements UserManager {
             return true;
         return false;
     }
+    public boolean uselessMethodWoCoverage91(String s) {
+        if (s== null)
+            return true;
+        if (s.isEmpty())
+            return true;
+        return false;
+    }
     public boolean uselessMethodWoCoverage2(String s) {
         if (s== null)
             return true;
