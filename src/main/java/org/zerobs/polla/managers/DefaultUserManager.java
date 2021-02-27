@@ -12,6 +12,41 @@ public class DefaultUserManager implements UserManager {
 
     @Override
     public User add(User user) {
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
+        System.out.println("a");
         return userRepository.save(user);
     }
 }
