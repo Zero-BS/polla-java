@@ -1,0 +1,10 @@
+server:
+  port: 2194
+  servlet:
+    context-path: /api
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://accounts.google.com
