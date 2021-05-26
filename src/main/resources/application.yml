@@ -8,3 +8,6 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: https://accounts.google.com
+locale:
+  default: en-US
+  supported: ${locale.default}, fr-FR #add comma separated values like: ${locale.default}, fr-FR
