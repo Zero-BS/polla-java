@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
+import java.time.Instant;
+
 import static org.springframework.security.oauth2.core.OAuth2TokenValidatorResult.failure;
 import static org.springframework.security.oauth2.core.OAuth2TokenValidatorResult.success;
 
@@ -43,6 +45,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 return failure(new OAuth2Error("invalid-azp", "invalid azp in token", null));
             if (!GOOGLE_ISSUER_URI.equals(token.getIssuer().toString()))
                 return failure(new OAuth2Error("invalid-issuer", "invalid issuer", null));
+            if (token.getExpiresAt() == null)
+                return failure(new OAuth2Error("empty-exp", "empty exp in token", null));
+            if (token.getExpiresAt().isBefore(Instant.now()))
+                return failure(new OAuth2Error("expired", "token expired at " + token.getExpiresAt().toString(), null));
             return success();
         });
 
