@@ -21,13 +21,15 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(CustomRuntimeException.class)
     public ResponseEntity<ExceptionResponseBody> handleCustomRuntimeException(CustomRuntimeException e, Locale locale) {
-        String messageTitle = messageSource.getMessage(e.getCustomExceptionType().getMessageTitlePropertyId(), null, locale);
-        String messageText = messageSource.getMessage(e.getCustomExceptionType().getMessageTextPropertyId(), null, locale);
+        String messageTitle = null;
+        if (e.getCustomExceptionType().getMessageTitlePropertyId() != null)
+            messageTitle = messageSource.getMessage(e.getCustomExceptionType().getMessageTitlePropertyId(), null, locale);
+        String messageText = messageSource.getMessage(e.getCustomExceptionType().getMessageTextPropertyId(), e.getArgs(), locale);
 
-        //keep minimal logging, enable only if needed
-//        log.error("CustomRuntimeException messageId: {}, messageTitle: {}, internalCode: {}, httpStatusCode: {}",
-//                e.getCustomExceptionType().getMessageTitlePropertyId(), messageTitle, e.getCustomExceptionType().getInternalCode(),
-//                e.getCustomExceptionType().getHttpStatus().value(), e);
+        //keep minimal logging, enable by changing to error level only if needed
+        log.info("CustomRuntimeException messageId: {}, messageTitle: {}, internalCode: {}, httpStatusCode: {}",
+                e.getCustomExceptionType().getMessageTitlePropertyId(), messageTitle, e.getCustomExceptionType().getInternalCode(),
+                e.getCustomExceptionType().getHttpStatus().value(), e);
 
         return new ResponseEntity<>(new ExceptionResponseBody(messageTitle, messageText, e.getCustomExceptionType().getInternalCode()),
                 e.getCustomExceptionType().getHttpStatus());
@@ -35,23 +37,23 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponseBody> handleException(Exception e, Locale locale) {
-        var customError = CustomExceptionType.UNEXPECTED_ERROR;
-        String messageTitle = messageSource.getMessage(customError.getMessageTitlePropertyId(), null, locale);
-        String messageText = messageSource.getMessage(customError.getMessageTextPropertyId(), null, locale);
+        var customExceptionType = CustomExceptionType.UNEXPECTED_ERROR;
+        String messageTitle = messageSource.getMessage(customExceptionType.getMessageTitlePropertyId(), null, locale);
+        String messageText = messageSource.getMessage(customExceptionType.getMessageTextPropertyId(), null, locale);
 
         log.error("Exception message: {}", e.getMessage(), e);
 
-        return new ResponseEntity<>(new ExceptionResponseBody(messageTitle, messageText, customError.getInternalCode()),
-                customError.getHttpStatus());
+        return new ResponseEntity<>(new ExceptionResponseBody(messageTitle, messageText, customExceptionType.getInternalCode()),
+                customExceptionType.getHttpStatus());
     }
 
     @EventListener
     public void onAuthenticationFailureBadCredentials(AuthenticationFailureBadCredentialsEvent badCredentials) {
         if (badCredentials.getAuthentication() instanceof BearerTokenAuthenticationToken) {
             //logging can cause problem if bad actor keep on calling the api with invalid token
-//            log.error("jwt validation failed. message: {}, details: {}",
-//                    badCredentials.getException().getMessage(),
-//                    badCredentials.getAuthentication().getDetails().toString());
+            log.info("jwt validation failed. message: {}, details: {}",
+                    badCredentials.getException().getMessage(),
+                    badCredentials.getAuthentication().getDetails().toString());
         }
     }
 

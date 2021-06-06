@@ -7,4 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CustomRuntimeException extends RuntimeException {
     private final CustomExceptionType customExceptionType;
+    private final String[] args;
+
+    public CustomRuntimeException(CustomExceptionType customExceptionType) {
+        this(customExceptionType, null);
+    }
 }
