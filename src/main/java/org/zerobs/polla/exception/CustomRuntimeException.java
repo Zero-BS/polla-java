@@ -2,14 +2,16 @@ package org.zerobs.polla.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
 public class CustomRuntimeException extends RuntimeException {
-    private final CustomExceptionType customExceptionType;
+    public static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST;
+    private final RuntimeExceptionType runtimeExceptionType;
     private final String[] args;
 
-    public CustomRuntimeException(CustomExceptionType customExceptionType) {
-        this(customExceptionType, null);
+    public CustomRuntimeException(RuntimeExceptionType runtimeExceptionType) {
+        this(runtimeExceptionType, null);
     }
 }

@@ -21,30 +21,27 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(CustomRuntimeException.class)
     public ResponseEntity<ExceptionResponseBody> handleCustomRuntimeException(CustomRuntimeException e, Locale locale) {
-        String messageTitle = null;
-        if (e.getCustomExceptionType().getMessageTitlePropertyId() != null)
-            messageTitle = messageSource.getMessage(e.getCustomExceptionType().getMessageTitlePropertyId(), null, locale);
-        String messageText = messageSource.getMessage(e.getCustomExceptionType().getMessageTextPropertyId(), e.getArgs(), locale);
+        String messageText = messageSource.getMessage(e.getRuntimeExceptionType().getMessageTextPropertyId(),
+                e.getArgs(), locale);
 
         //keep minimal logging, enable by changing to error level only if needed
-        log.info("CustomRuntimeException messageId: {}, messageTitle: {}, internalCode: {}, httpStatusCode: {}",
-                e.getCustomExceptionType().getMessageTitlePropertyId(), messageTitle, e.getCustomExceptionType().getInternalCode(),
-                e.getCustomExceptionType().getHttpStatus().value(), e);
+        log.info("CustomRuntimeException messageId: {}, internalCode: {}, httpStatusCode: {}",
+                e.getRuntimeExceptionType().getMessageTextPropertyId(), e.getRuntimeExceptionType().getInternalCode(),
+                CustomRuntimeException.HTTP_STATUS, e);
 
-        return new ResponseEntity<>(new ExceptionResponseBody(messageTitle, messageText, e.getCustomExceptionType().getInternalCode()),
-                e.getCustomExceptionType().getHttpStatus());
+        return new ResponseEntity<>(new ExceptionResponseBody(null, messageText,
+                e.getRuntimeExceptionType().getInternalCode()), CustomRuntimeException.HTTP_STATUS);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponseBody> handleException(Exception e, Locale locale) {
-        var customExceptionType = CustomExceptionType.UNEXPECTED_ERROR;
-        String messageTitle = messageSource.getMessage(customExceptionType.getMessageTitlePropertyId(), null, locale);
-        String messageText = messageSource.getMessage(customExceptionType.getMessageTextPropertyId(), null, locale);
+        String messageTitle = messageSource.getMessage(CustomException.MESSAGE_TITLE_PROPERTY_ID, null, locale);
+        String messageText = messageSource.getMessage(CustomException.MESSAGE_TEXT_PROPERTY_ID, null, locale);
 
         log.error("Exception message: {}", e.getMessage(), e);
 
-        return new ResponseEntity<>(new ExceptionResponseBody(messageTitle, messageText, customExceptionType.getInternalCode()),
-                customExceptionType.getHttpStatus());
+        return new ResponseEntity<>(new ExceptionResponseBody(messageTitle, messageText, CustomException.INTERNAL_CODE),
+                CustomException.HTTP_STATUS);
     }
 
     @EventListener

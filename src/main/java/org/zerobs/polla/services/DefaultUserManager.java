@@ -3,7 +3,7 @@ package org.zerobs.polla.services;
 import com.github.javafaker.Faker;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.zerobs.polla.entities.db.User;
@@ -14,7 +14,8 @@ import java.time.Year;
 import java.time.ZoneId;
 
 import static java.lang.System.currentTimeMillis;
-import static org.zerobs.polla.exception.CustomExceptionType.*;
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
+import static org.zerobs.polla.exception.RuntimeExceptionType.*;
 
 @Service
 public class DefaultUserManager implements UserManager {
@@ -26,14 +27,16 @@ public class DefaultUserManager implements UserManager {
 
     @Override
     public void add(User user, Jwt principal) {
+        if (user == null)
+            throw new CustomRuntimeException(EMPTY_USER);
         if (get(principal) != null)
-            throw new CustomRuntimeException(USER_ALREADY_EXISTS);
+            throw new CustomRuntimeException(EXISTING_USER);
         if (StringUtils.isBlank(user.getUsername()))
             throw new CustomRuntimeException(EMPTY_USERNAME, new String[]{getUsernameSuggestion()});
 
         user.setUsername(user.getUsername().trim());
         if (userRepository.usernameExists(user.getUsername()))
-            throw new CustomRuntimeException(USERNAME_TAKEN, new String[]{getUsernameSuggestion()});
+            throw new CustomRuntimeException(EXISTING_USERNAME, new String[]{getUsernameSuggestion()});
 
         if (user.getYearOfBirth() == null)
             throw new CustomRuntimeException(EMPTY_YEAR_OF_BIRTH);
@@ -41,15 +44,15 @@ public class DefaultUserManager implements UserManager {
         int currentYear = Year.now(ZoneId.of("UTC")).getValue();
         int age = currentYear - user.getYearOfBirth();
         if (age < 3)
-            throw new CustomRuntimeException(USER_TOO_YOUNG);
+            throw new CustomRuntimeException(TOO_YOUNG_USER);
         if (age > 130)
-            throw new CustomRuntimeException(USER_TOO_OLD);
+            throw new CustomRuntimeException(TOO_OLD_USER);
 
         if (user.getGender() == null)
             throw new CustomRuntimeException(EMPTY_GENDER);
 
 
-        user.setId(principal.getSubject());
+        user.setId(principal);
         user.setLocale(principal.getClaimAsString(LOCALE_CLAIM));
         user.setEmail(principal.getClaimAsString(EMAIL_CLAIM));
         user.setEmailVerified(principal.getClaimAsBoolean(EMAIL_VERIFIED_CLAIM));
@@ -59,8 +62,10 @@ public class DefaultUserManager implements UserManager {
     }
 
     @Override
+    @Nullable
     public User get(Jwt principal) {
-        var user = userRepository.get(User.getPk(principal.getSubject()));
+        var user = new User(principal);
+        user = userRepository.getByPk(user.getPk());
         if (user == null)
             return null;
         if (!user.getEmail().equals(principal.getClaimAsString(EMAIL_CLAIM))) {
@@ -72,7 +77,7 @@ public class DefaultUserManager implements UserManager {
     }
 
     private String getUsernameSuggestion() {
-        var faker = new Faker(LocaleContextHolder.getLocale());
-        return faker.superhero().name().replace(" ", "") + "_" + faker.random().hex(4).toLowerCase();
+        var faker = new Faker(getLocale());
+        return faker.superhero().name().replace(" ", "") + "_" + faker.random().hex(4).toLowerCase(getLocale());
     }
 }
