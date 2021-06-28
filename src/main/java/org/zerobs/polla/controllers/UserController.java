@@ -6,7 +6,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.zerobs.polla.entities.db.User;
+import org.zerobs.polla.exception.CustomRuntimeException;
 import org.zerobs.polla.services.UserManager;
+
+import static org.zerobs.polla.exception.RuntimeExceptionType.INVALID_USER;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -22,6 +25,8 @@ public class UserController {
 
     @GetMapping
     public User get(@AuthenticationPrincipal Jwt principal) {
-        return userManager.get(principal);
+        var user = userManager.get(principal);
+        if (user == null) throw new CustomRuntimeException(INVALID_USER);
+        return user;
     }
 }
