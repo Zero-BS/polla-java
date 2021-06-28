@@ -27,10 +27,10 @@ public class CustomExceptionHandler {
         //keep minimal logging, enable by changing to error level only if needed
         log.info("CustomRuntimeException messageId: {}, internalCode: {}, httpStatusCode: {}",
                 e.getRuntimeExceptionType().getMessageTextPropertyId(), e.getRuntimeExceptionType().getInternalCode(),
-                CustomRuntimeException.HTTP_STATUS, e);
+                e.getRuntimeExceptionType().getHttpStatus(), e);
 
         return new ResponseEntity<>(new ExceptionResponseBody(null, messageText,
-                e.getRuntimeExceptionType().getInternalCode()), CustomRuntimeException.HTTP_STATUS);
+                e.getRuntimeExceptionType().getInternalCode()), e.getRuntimeExceptionType().getHttpStatus());
     }
 
     @ExceptionHandler(Exception.class)

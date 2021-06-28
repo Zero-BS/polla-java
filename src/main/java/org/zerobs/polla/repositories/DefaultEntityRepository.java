@@ -1,9 +1,7 @@
 package org.zerobs.polla.repositories;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedQueryList;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.zerobs.polla.entities.db.GSI;
 import org.zerobs.polla.entities.db.SortKeyCondition;
 import org.zerobs.polla.exception.CustomException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +27,7 @@ public class DefaultEntityRepository<T extends Entity> implements EntityReposito
     private final Class<T> genericType = (Class<T>) resolveTypeArgument(getClass(), DefaultEntityRepository.class);
 
     @Autowired
-    private AmazonDynamoDB client;
-
-    private final DynamoDBMapper mapper = new DynamoDBMapper(client);
+    private DynamoDBMapper mapper;
 
     @Override
     public void save(T object) {
@@ -78,15 +73,11 @@ public class DefaultEntityRepository<T extends Entity> implements EntityReposito
     }
 
     protected T getByIndex(GSI gsi, String pkValue, String skValue, SortKeyCondition sortKeyCondition) {
-        return getPaginatedListByIndex(gsi, pkValue, skValue, sortKeyCondition, 1).stream().findFirst().orElse(null);
+        return getByIndex(gsi, pkValue, skValue, sortKeyCondition, 1).stream().findFirst().orElse(null);
     }
 
-    protected List<T> getByIndex(GSI gsi, String pkValue, String skValue, SortKeyCondition sortKeyCondition, int limit) {
-        return new ArrayList<>(getPaginatedListByIndex(gsi, pkValue, skValue, sortKeyCondition, limit));
-    }
-
-    private PaginatedQueryList<T> getPaginatedListByIndex(GSI gsi, String pkValue, String skValue,
-                                                          SortKeyCondition sortKeyCondition, int limit) {
+    protected List<T> getByIndex(GSI gsi, String pkValue, String skValue,
+                                 SortKeyCondition sortKeyCondition, int limit) {
         Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
         expressionAttributeValues.put(COLON + gsi.getPkAttributeName(), new AttributeValue().withS(pkValue));
 

@@ -4,20 +4,17 @@ import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
-import org.zerobs.polla.services.DefaultRestConsumer;
-import org.zerobs.polla.services.RestConsumer;
 
 import java.util.List;
 import java.util.Locale;
 
 import static java.util.stream.Collectors.toList;
-import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
 @Configuration
 public class BeansConfig {
@@ -45,8 +42,7 @@ public class BeansConfig {
     }
 
     @Bean
-    @Scope(SCOPE_PROTOTYPE)
-    public RestConsumer restConsumer(String baseUrl) {
-        return new DefaultRestConsumer(baseUrl);
+    public DynamoDBMapper dynamoDBMapper(AmazonDynamoDB client) {
+        return new DynamoDBMapper(client);
     }
 }

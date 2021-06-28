@@ -18,6 +18,7 @@ public abstract class Entity {
     private static final String ENTITY_IDENTIFIER = "ENTITY";
 
     @JsonIgnore
+    @DynamoDBIgnore
     private final String entityClassIdentifier = getClass().getSimpleName().toUpperCase(Locale.ROOT);
 
     @DynamoDBIgnore
@@ -29,14 +30,6 @@ public abstract class Entity {
     @DynamoDBRangeKey
     @JsonIgnore
     protected String sk = ENTITY_IDENTIFIER;
-
-    protected Entity() {
-        System.out.println("entity contructor callled");
-    }
-
-    protected static String getSeparator() {
-        return SEPARATOR;
-    }
 
     @DynamoDBIgnore
     @JsonIgnore

@@ -1,10 +1,6 @@
 package org.zerobs.polla.entities.db;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -28,7 +24,7 @@ public class User extends CreatableEntity {
     private String username;
     @DynamoDBAttribute(attributeName = "year_of_birth")
     private Integer yearOfBirth;
-    @DynamoDBIgnore
+    @DynamoDBTypeConvertedEnum
     private Gender gender;
     private String locale;
     private String email;
@@ -45,15 +41,4 @@ public class User extends CreatableEntity {
     public void setId(@NotNull Jwt principal) {
         id = principal.getIssuer().getAuthority().toUpperCase(Locale.ROOT) + SEPARATOR + principal.getSubject();
     }
-
-    @DynamoDBAttribute(attributeName = "gender")
-    @JsonIgnore
-    public String getGenderDBString() {
-        return gender.getDbString();
-    }
-
-    public void setGenderDBString(String genderDBString) {
-        gender = Gender.fromDBString(genderDBString);
-    }
-
 }

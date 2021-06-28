@@ -23,7 +23,6 @@ public class DefaultLocationManager implements LocationManager {
     private static final String USERNAME_QUERY = "username";
     @Autowired
     private ObjectProvider<RestConsumer> restConsumers;
-    private final RestConsumer geonamesConsumer = restConsumers.getObject(GEONAMES_BASE_URL);
     @Value("${geoname.username}")
     private String geoNameUsername;
 
@@ -34,13 +33,13 @@ public class DefaultLocationManager implements LocationManager {
 
     @Override
     public List<GeoName> getChildren(int geoNameId) {
-        GeoNamesResponse geoNamesResponse = geonamesConsumer.get(CHILDREN_JSON_PATH, getQueryParams(geoNameId));
+        GeoNamesResponse geoNamesResponse = getGeoNamesConsumer().get(CHILDREN_JSON_PATH, getQueryParams(geoNameId));
         return geoNamesResponse == null ? new ArrayList<>() : geoNamesResponse.getGeoNames();
     }
 
     @Override
     public boolean validate(int geoNameId) {
-        return geonamesConsumer.<GeoName>getResponseEntity(GET_JSON_PATH, getQueryParams(geoNameId),
+        return getGeoNamesConsumer().<GeoName>getResponseEntity(GET_JSON_PATH, getQueryParams(geoNameId),
                 HttpStatus.NOT_FOUND).getStatusCode().equals(HttpStatus.NOT_FOUND);
     }
 
@@ -49,5 +48,9 @@ public class DefaultLocationManager implements LocationManager {
         queryParams.put(GEONAME_ID_QUERY, geoNameId);
         queryParams.put(USERNAME_QUERY, geoNameUsername);
         return queryParams;
+    }
+
+    private RestConsumer getGeoNamesConsumer() {
+        return restConsumers.getObject(GEONAMES_BASE_URL);
     }
 }

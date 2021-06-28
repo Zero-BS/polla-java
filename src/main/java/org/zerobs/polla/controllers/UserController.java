@@ -16,7 +16,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void add(@RequestBody User user, @AuthenticationPrincipal Jwt principal) {
+    public void add(@RequestBody(required = false) User user, @AuthenticationPrincipal Jwt principal) {
         userManager.add(user, principal);
     }
 

@@ -67,7 +67,7 @@ public class DefaultUserManager implements UserManager {
         var user = new User(principal);
         user = userRepository.getByPk(user.getPk());
         if (user == null)
-            return null;
+            throw new CustomRuntimeException(INVALID_USER);
         if (!user.getEmail().equals(principal.getClaimAsString(EMAIL_CLAIM))) {
             user.setEmail(principal.getClaimAsString(EMAIL_CLAIM));
             user.setUpdatedOn(currentTimeMillis());

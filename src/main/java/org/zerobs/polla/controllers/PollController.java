@@ -14,7 +14,7 @@ public class PollController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void add(@RequestBody Poll poll) {
+    public void add(@RequestBody(required = false) Poll poll) {
         pollManager.add(poll);
     }
 

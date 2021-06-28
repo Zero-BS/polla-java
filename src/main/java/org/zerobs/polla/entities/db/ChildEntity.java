@@ -21,7 +21,7 @@ public abstract class ChildEntity extends Entity {
 
     @Override
     protected String getPkInitials() {
-        return parentEntityClassIdentifier + getSeparator();
+        return parentEntityClassIdentifier + SEPARATOR;
     }
 
     @Override
@@ -36,7 +36,7 @@ public abstract class ChildEntity extends Entity {
     }
 
     private String getSkInitials() {
-        return getEntityClassIdentifier() + getSeparator();
+        return getEntityClassIdentifier() + SEPARATOR;
     }
 
     @Override

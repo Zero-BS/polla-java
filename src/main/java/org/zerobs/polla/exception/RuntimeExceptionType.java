@@ -2,6 +2,7 @@ package org.zerobs.polla.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
@@ -29,8 +30,14 @@ public enum RuntimeExceptionType {
     EMPTY_TAG_NAME("error.empty.tag.name", 4020),
     EMPTY_TAG_NAME_INITIALS("error.empty.tag.name.initials", 4021),
     SMALL_TAG_NAME_INITIALS("error.small.tag.name.initials", 4022),
-    LARGE_TAGS("error.large.tags", 4023);
+    LARGE_TAGS("error.large.tags", 4023),
+    INVALID_USER("error.invalid.user", 4024, HttpStatus.NOT_FOUND);
 
     private final String messageTextPropertyId;
     private final int internalCode;
+    private final HttpStatus httpStatus;
+
+    RuntimeExceptionType(String messageTextPropertyId, int internalCode) {
+        this(messageTextPropertyId, internalCode, HttpStatus.BAD_REQUEST);
+    }
 }
