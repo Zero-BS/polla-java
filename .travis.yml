@@ -7,3 +7,5 @@ addons:
 
 script:
   - ./gradlew sonarqube
+before_install:
+  - chmod +x gradlew
