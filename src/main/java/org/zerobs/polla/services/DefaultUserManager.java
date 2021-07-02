@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.zerobs.polla.entities.db.User;
 import org.zerobs.polla.exception.CustomRuntimeException;
 import org.zerobs.polla.repositories.UserRepository;
+import org.zerobs.polla.utilities.Utils;
 
 import java.time.Year;
 import java.time.ZoneId;
@@ -29,7 +30,7 @@ public class DefaultUserManager implements UserManager {
     public void add(User user, Jwt principal) {
         if (user == null)
             throw new CustomRuntimeException(EMPTY_USER);
-        if (get(principal) != null)
+        if (get() != null)
             throw new CustomRuntimeException(EXISTING_USER);
         if (StringUtils.isBlank(user.getUsername()))
             throw new CustomRuntimeException(EMPTY_USERNAME, new String[]{getUsernameSuggestion()});
@@ -63,7 +64,8 @@ public class DefaultUserManager implements UserManager {
 
     @Override
     @Nullable
-    public User get(Jwt principal) {
+    public User get() {
+        Jwt principal = Utils.getPrincipal();
         var user = new User(principal);
         user = userRepository.getByPk(user.getPk());
         if (user == null)

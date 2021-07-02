@@ -45,7 +45,7 @@ public class DefaultRestConsumer implements RestConsumer {
                 })
                 .retrieve()
                 .onStatus(httpStatus -> Arrays.asList(ignoreStatuses).contains(httpStatus), clientResponse -> Mono.empty())
-                .bodyToMono(new ParameterizedTypeReference<ResponseEntity<T>>() {
+                .toEntity(new ParameterizedTypeReference<T>() {
                 })
                 .block(requestTimeout);
     }

@@ -3,14 +3,12 @@ package org.zerobs.polla.services;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.zerobs.polla.entities.db.Tag;
-import org.zerobs.polla.entities.db.User;
 import org.zerobs.polla.exception.CustomException;
 import org.zerobs.polla.exception.CustomRuntimeException;
 import org.zerobs.polla.repositories.TagRepository;
+import org.zerobs.polla.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +47,7 @@ public class DefaultTagManager implements TagManager {
                 tag.setId(UUID.randomUUID().toString());
                 tag.setFollowers(0);
                 tag.setCreatedOn(System.currentTimeMillis());
-                tag.setCreatedBy(new User((Jwt) SecurityContextHolder.getContext()
-                        .getAuthentication().getPrincipal()).getPk());
+                tag.setCreatedBy(Utils.getUserId());
                 tag.setNewTag(true);
                 tags.set(i, tag);
                 newTags.add(tag);

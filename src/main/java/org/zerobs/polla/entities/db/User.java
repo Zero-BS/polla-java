@@ -9,7 +9,6 @@ import org.zerobs.polla.entities.Gender;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
-import java.util.Locale;
 
 import static org.zerobs.polla.constants.ApplicationConstants.TABLE_NAME;
 
@@ -39,6 +38,6 @@ public class User extends CreatableEntity {
     }
 
     public void setId(@NotNull Jwt principal) {
-        id = principal.getIssuer().getAuthority().toUpperCase(Locale.ROOT) + SEPARATOR + principal.getSubject();
+        id = principal.getIssuer().getAuthority() + SEPARATOR + principal.getSubject();
     }
 }

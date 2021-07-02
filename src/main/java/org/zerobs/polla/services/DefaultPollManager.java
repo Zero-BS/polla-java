@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.zerobs.polla.entities.db.Option;
 import org.zerobs.polla.entities.db.Poll;
 import org.zerobs.polla.entities.db.Tag;
+import org.zerobs.polla.exception.CustomException;
 import org.zerobs.polla.exception.CustomRuntimeException;
 import org.zerobs.polla.repositories.EntityRepository;
 import org.zerobs.polla.utilities.Utils;
@@ -31,7 +32,7 @@ public class DefaultPollManager implements PollManager {
     private OptionManager optionManager;
 
     @Override
-    public void add(Poll poll) {
+    public void add(Poll poll) throws CustomException {
         validateAndInitialize(poll);
 
         List<Option> savedOptions = new ArrayList<>();
@@ -40,9 +41,9 @@ public class DefaultPollManager implements PollManager {
             poll.setTags(tagManager.add(poll.getTags()));
             pollRepository.save(poll);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
             optionManager.delete(savedOptions);
             tagManager.delete(poll.getTags().stream().filter(Tag::isNewTag).collect(toList()));
+            throw new CustomException(e.getMessage(), e);
         }
     }
 
@@ -57,6 +58,10 @@ public class DefaultPollManager implements PollManager {
         validateLocations(poll);
         validateOptions(poll);
         validateTags(poll);
+
+        poll.setCreatedBy(Utils.getUserId());
+        poll.setCreatedOn(System.currentTimeMillis());
+        poll.setUpdatedOn(poll.getCreatedOn());
     }
 
     private void validatePollProperties(Poll poll) {

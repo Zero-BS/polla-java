@@ -33,13 +33,13 @@ public class DefaultLocationManager implements LocationManager {
 
     @Override
     public List<GeoName> getChildren(int geoNameId) {
-        GeoNamesResponse geoNamesResponse = getGeoNamesConsumer().get(CHILDREN_JSON_PATH, getQueryParams(geoNameId));
+        var geoNamesResponse = getGeoNamesConsumer().<GeoNamesResponse>get(CHILDREN_JSON_PATH, getQueryParams(geoNameId));
         return geoNamesResponse == null ? new ArrayList<>() : geoNamesResponse.getGeoNames();
     }
 
     @Override
     public boolean validate(int geoNameId) {
-        return getGeoNamesConsumer().<GeoName>getResponseEntity(GET_JSON_PATH, getQueryParams(geoNameId),
+        return !getGeoNamesConsumer().<GeoName>getResponseEntity(GET_JSON_PATH, getQueryParams(geoNameId),
                 HttpStatus.NOT_FOUND).getStatusCode().equals(HttpStatus.NOT_FOUND);
     }
 

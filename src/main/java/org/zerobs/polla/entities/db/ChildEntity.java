@@ -1,5 +1,8 @@
 package org.zerobs.polla.entities.db;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,7 +15,9 @@ import static org.zerobs.polla.constants.ApplicationConstants.TABLE_NAME;
 @Data
 @DynamoDBTable(tableName = TABLE_NAME)
 public abstract class ChildEntity extends Entity {
+    @DynamoDBIgnore
     private final String parentEntityClassIdentifier;
+    @DynamoDBIgnore
     private String parentId;
 
     protected ChildEntity(Class<? extends Entity> parentClass) {
@@ -25,6 +30,7 @@ public abstract class ChildEntity extends Entity {
     }
 
     @Override
+    @DynamoDBHashKey
     public String getPk() {
         return getPkInitials() + parentId;
     }
@@ -40,6 +46,7 @@ public abstract class ChildEntity extends Entity {
     }
 
     @Override
+    @DynamoDBRangeKey
     public String getSk() {
         return getSkInitials() + getId();
     }
