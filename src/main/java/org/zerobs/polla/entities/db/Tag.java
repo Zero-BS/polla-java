@@ -2,6 +2,7 @@ package org.zerobs.polla.entities.db;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class Tag extends CreatableEntity {
     @Null
     protected Long updatedOn;
     private String name;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer followers;
     @JsonIgnore
     @DynamoDBAttribute(attributeName = SK_TAG_NAME_GSI)

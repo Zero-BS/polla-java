@@ -31,7 +31,7 @@ class DynamoTagsConverterTest {
         assertEquals(1, tagObjects.size());
         assertEquals(2, tagObjects.get(0).keySet().size());
         assertEquals(tags.get(0).getId(), tagObjects.get(0).get("id"));
-        assertEquals(tags.get(0).getName(), tagObjects.get(0).get("text"));
+        assertEquals(tags.get(0).getName(), tagObjects.get(0).get("name"));
 
         assertEquals(tags, dynamoTagsConverter.unconvert(tagObjects));
     }
