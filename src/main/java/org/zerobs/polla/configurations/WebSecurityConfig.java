@@ -21,10 +21,12 @@ import static org.springframework.security.oauth2.core.OAuth2TokenValidatorResul
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String GOOGLE_ISSUER_URI = "https://accounts.google.com";
-    @Value("${android.google.client.id}")
+    @Value("${android.google.client.id:}")
     private String androidGoogleClientId;
-    @Value("${web.google.client.id}")
+    @Value("${web.google.client.id:}")
     private String webGoogleClientId;
+    @Value(("${use.local.db:false}"))
+    private boolean ussLocalDb;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -39,6 +41,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 JwtDecoders.fromIssuerLocation(GOOGLE_ISSUER_URI);
 
         jwtDecoder.setJwtValidator(token -> {
+            if (ussLocalDb)
+                return success();
             if (!token.getAudience().contains(webGoogleClientId))
                 return failure(new OAuth2Error("invalid-aud", "invalid aud in token", null));
             if (!token.getClaimAsString("azp").equals(androidGoogleClientId))

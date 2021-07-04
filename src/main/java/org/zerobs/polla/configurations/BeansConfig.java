@@ -1,6 +1,7 @@
 package org.zerobs.polla.configurations;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -22,6 +23,8 @@ public class BeansConfig {
     private String defaultLocaleTag;
     @Value("${locale.supported}")
     private List<String> supportedLocaleTags;
+    @Value(("${use.local.db:false}"))
+    private boolean ussLocalDb;
 
     @Bean
     public LocaleResolver localeResolver() {
@@ -37,8 +40,13 @@ public class BeansConfig {
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
-        return AmazonDynamoDBClientBuilder.standard().withCredentials(
-                new DefaultAWSCredentialsProviderChain()).withRegion(Regions.DEFAULT_REGION).build();
+        AmazonDynamoDBClientBuilder builder = AmazonDynamoDBClientBuilder.standard()
+                .withCredentials(new DefaultAWSCredentialsProviderChain());
+        if (ussLocalDb)
+            builder.withEndpointConfiguration(new EndpointConfiguration("http://localhost:8000", "us-west-2"));
+        else
+            builder.withRegion(Regions.DEFAULT_REGION);
+        return builder.build();
     }
 
     @Bean
