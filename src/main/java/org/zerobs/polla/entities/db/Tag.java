@@ -2,7 +2,6 @@ package org.zerobs.polla.entities.db;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,9 +19,7 @@ public class Tag extends CreatableEntity {
     private static final String PK_TAG_NAME_GSI = "tag_name_gsi_pk";
     private static final String GSI_NAME_TAG_NAME = "GSI-tag-name";
     @JsonIgnore
-    @DynamoDBAttribute(attributeName = PK_TAG_NAME_GSI)
-    @DynamoDBIndexHashKey(globalSecondaryIndexName = GSI_NAME_TAG_NAME)
-    public static final String TAG_GSI_PK = "TAG";
+    public static final String TAG_GSI_PK_VALUE = "TAG";
     private static final String SK_TAG_NAME_GSI = "lowered_name_name";
     public static final GSI GSI_TAG_NAME = new GSI(GSI_NAME_TAG_NAME, PK_TAG_NAME_GSI, SK_TAG_NAME_GSI);
     @DynamoDBIgnore
@@ -30,7 +27,6 @@ public class Tag extends CreatableEntity {
     @Null
     protected Long updatedOn;
     private String name;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer followers;
     @JsonIgnore
     @DynamoDBAttribute(attributeName = SK_TAG_NAME_GSI)
@@ -39,6 +35,9 @@ public class Tag extends CreatableEntity {
     @JsonIgnore
     @DynamoDBIgnore
     private boolean newTag;
+    @DynamoDBAttribute(attributeName = PK_TAG_NAME_GSI)
+    @DynamoDBIndexHashKey(globalSecondaryIndexName = GSI_NAME_TAG_NAME)
+    private String tagGsiPk = TAG_GSI_PK_VALUE;
 
     public Tag(String name) {
         this.name = name;

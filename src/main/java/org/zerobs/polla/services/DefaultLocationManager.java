@@ -1,5 +1,6 @@
 package org.zerobs.polla.services;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +42,11 @@ public class DefaultLocationManager implements LocationManager {
     public boolean validate(int geoNameId) {
         return !getGeoNamesConsumer().<GeoName>getResponseEntity(GET_JSON_PATH, getQueryParams(geoNameId),
                 HttpStatus.NOT_FOUND).getStatusCode().equals(HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    public List<Integer> getHierarchy(Integer openLocation) {
+        throw new NotImplementedException();
     }
 
     private Map<String, Object> getQueryParams(int geoNameId) {

@@ -39,8 +39,10 @@ public class DefaultTagManager implements TagManager {
                     throw new CustomRuntimeException(INVALID_TAG_ID, new String[]{tagId});
             } else {
                 var tag = tagRepository.getByName(tags.get(i).getName());
-                if (tag != null)
+                if (tag != null) {
                     tags.set(i, tag);
+                    continue;
+                }
                 if (StringUtils.isBlank(tags.get(i).getName()))
                     throw new CustomRuntimeException(EMPTY_TAG_NAME);
                 tag = new Tag(tags.get(i).getName());

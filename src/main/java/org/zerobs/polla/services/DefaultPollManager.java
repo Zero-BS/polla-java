@@ -87,10 +87,8 @@ public class DefaultPollManager implements PollManager {
     }
 
     private void validateLocations(Poll poll) {
-        if (poll.getLocationsOpen() != null)
-            for (Integer locationId : poll.getLocationsOpen())
-                if (!locationManager.validate(locationId))
-                    throw new CustomRuntimeException(INVALID_LOCATION_ID, new String[]{String.valueOf(locationId)});
+        if (poll.getOpenLocation() != null && !locationManager.validate(poll.getOpenLocation()))
+            throw new CustomRuntimeException(INVALID_LOCATION_ID, new String[]{String.valueOf(poll.getOpenLocation())});
     }
 
     private void validateTags(Poll poll) {

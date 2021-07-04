@@ -10,4 +10,6 @@ public interface LocationManager {
     List<GeoName> getChildren(int locationId);
 
     boolean validate(int locationId);
+
+    List<Integer> getHierarchy(Integer openLocation);
 }

@@ -6,7 +6,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.zerobs.polla.utilities.DynamoLocationsConverter;
 import org.zerobs.polla.utilities.DynamoTagsConverter;
 
 import java.util.List;
@@ -23,9 +22,8 @@ public class Poll extends CreatableEntity {
     private Long expiresOn;
     @DynamoDBAttribute(attributeName = "publish_on")
     private Long publishOn;
-    @DynamoDBTypeConverted(converter = DynamoLocationsConverter.class)
-    @DynamoDBAttribute(attributeName = "locations_open")
-    private List<Integer> locationsOpen;
+    @DynamoDBAttribute(attributeName = "open_location")
+    private Integer openLocation;
     @DynamoDBAttribute(attributeName = "vote_change_allowed")
     private boolean voteChangeAllowed;
     @DynamoDBIgnore
