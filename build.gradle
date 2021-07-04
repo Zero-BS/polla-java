@@ -3,6 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id "org.sonarqube" version "3.3"
+	id 'jacoco'
 }
 
 group = 'org.zerobs'
@@ -46,6 +47,11 @@ test {
 	testLogging {
 		exceptionFormat = 'full'
 	}
+	finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+	dependsOn test // tests are required to run before generating the report
 }
 
 sonarqube {
