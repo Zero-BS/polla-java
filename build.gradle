@@ -62,3 +62,7 @@ sonarqube {
 		property "sonar.projectKey", "Zero-BS_polla-java"
 	}
 }
+
+tasks.named('sonarqube').configure {
+	dependsOn test
+}
