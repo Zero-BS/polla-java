@@ -16,11 +16,11 @@ import static org.zerobs.polla.constants.ApplicationConstants.TABLE_NAME;
 @Data
 @NoArgsConstructor
 public class Tag extends CreatableEntity {
-    private static final String PK_TAG_NAME_GSI = "tag_name_gsi_pk";
-    private static final String GSI_NAME_TAG_NAME = "GSI-tag-name";
+    public static final String PK_TAG_NAME_GSI = "tag_name_gsi_pk";
+    public static final String GSI_NAME_TAG_NAME = "GSI-tag-name";
     @JsonIgnore
     public static final String TAG_GSI_PK_VALUE = "TAG";
-    private static final String SK_TAG_NAME_GSI = "lowered_name_name";
+    public static final String SK_TAG_NAME_GSI = "lowered_name_name";
     public static final GSI GSI_TAG_NAME = new GSI(GSI_NAME_TAG_NAME, PK_TAG_NAME_GSI, SK_TAG_NAME_GSI);
     @DynamoDBIgnore
     @JsonIgnore

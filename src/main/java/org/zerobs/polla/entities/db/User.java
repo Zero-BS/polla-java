@@ -17,8 +17,9 @@ import static org.zerobs.polla.constants.ApplicationConstants.TABLE_NAME;
 @Data
 @NoArgsConstructor
 public class User extends CreatableEntity {
-    private static final String GSI_NAME_USERNAME = "GSI-username";
-    public static final GSI GSI_USERNAME = new GSI(GSI_NAME_USERNAME, "username");
+    public static final String PK_USERNAME_GSI = "username";
+    public static final String GSI_NAME_USERNAME = "GSI-username";
+    public static final GSI GSI_USERNAME = new GSI(GSI_NAME_USERNAME, PK_USERNAME_GSI);
     @DynamoDBIndexHashKey(globalSecondaryIndexName = GSI_NAME_USERNAME)
     private String username;
     @DynamoDBAttribute(attributeName = "year_of_birth")
