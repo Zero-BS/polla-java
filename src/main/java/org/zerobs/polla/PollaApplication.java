@@ -12,6 +12,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.zerobs.polla.entities.db.Tag;
 import org.zerobs.polla.entities.db.User;
+import org.zerobs.polla.utilities.Utils;
 
 import java.util.stream.StreamSupport;
 
@@ -43,22 +44,30 @@ public class PollaApplication {
             pollaTable.waitForActive();
         }
 
-        var globalSecondaryIndexes = pollaTable.describe().getGlobalSecondaryIndexes();
+        var globalSecondaryIndexes = Utils.cleanList(pollaTable.describe().getGlobalSecondaryIndexes());
 
         if (globalSecondaryIndexes.stream().noneMatch(gsi -> User.GSI_NAME_USERNAME.equals(gsi.getIndexName()))) {
             addGsiUsername();
-            pollaTable.waitForActive();
+            waitForIndexActive(pollaTable, User.GSI_NAME_USERNAME);
         }
 
         if (globalSecondaryIndexes.stream().noneMatch(gsi -> Tag.GSI_NAME_TAG_NAME.equals(gsi.getIndexName()))) {
             addGsiTagName();
-            pollaTable.waitForActive();
+            waitForIndexActive(pollaTable, Tag.GSI_NAME_TAG_NAME);
         }
+    }
+
+    private void waitForIndexActive(Table table, String indexName) throws InterruptedException {
+        while (!table.describe().getGlobalSecondaryIndexes().stream().filter(gsi -> indexName.equals(gsi.getIndexName()))
+                .findAny().orElseThrow().getIndexStatus().equals(IndexStatus.ACTIVE.toString()))
+            Thread.sleep(5000);
     }
 
     private void addGsiTagName() {
         amazonDynamoDB.updateTable(new UpdateTableRequest()
                 .withTableName(TABLE_NAME)
+                .withAttributeDefinitions(new AttributeDefinition(Tag.PK_TAG_NAME_GSI, ScalarAttributeType.S),
+                        new AttributeDefinition(Tag.SK_TAG_NAME_GSI, ScalarAttributeType.S))
                 .withGlobalSecondaryIndexUpdates(new GlobalSecondaryIndexUpdate()
                         .withCreate(new CreateGlobalSecondaryIndexAction()
                                 .withIndexName(Tag.GSI_NAME_TAG_NAME)
@@ -72,6 +81,7 @@ public class PollaApplication {
     private void addGsiUsername() {
         amazonDynamoDB.updateTable(new UpdateTableRequest()
                 .withTableName(TABLE_NAME)
+                .withAttributeDefinitions(new AttributeDefinition(User.PK_USERNAME_GSI, ScalarAttributeType.S))
                 .withGlobalSecondaryIndexUpdates(new GlobalSecondaryIndexUpdate()
                         .withCreate(new CreateGlobalSecondaryIndexAction()
                                 .withIndexName(User.GSI_NAME_USERNAME)
