@@ -21,4 +21,4 @@ script:
 before_install:
   - chmod +x gradlew
   - docker pull amazon/dynamodb-local:1.16.0
-  - travis_wait docker run -p 8000:8000 amazon/dynamodb-local
+  - docker run -dp 8000:8000 amazon/dynamodb-local
