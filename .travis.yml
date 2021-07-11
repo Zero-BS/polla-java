@@ -1,4 +1,14 @@
 language: java
+
+services:
+  - docker
+
+env:
+  - AWS_ACCESS_KEY_ID=fakeAccessKeyId
+  - AWS_SECRET_ACCESS_KEY=fakeSecretKey
+  - USE_LOCAL_DB=true
+  - secure: "nyRCGgDO7DzkR7u3hZrA2OU8/5805NZa4RUm1Jz3pYFY+8rbUaFCxRJt63ueN1FofUcpmMcPGLACxchjBJ2X09A4Ol1ZS/fuC/j2fHdYU39AQhMOav8f5Ehid2SrTUp1PPT9o5MxH9L9PzrZUxxUwt/TAhx+5NTGDo6GjLMhWN8GlykjmmrBy9Kx+mgGpY51iG9v5y7BAS5Zyn5N7H1nTZRNX+GTloPziAsc5aDWvsCY3JMDJIZmrbcFCJ1iAggJK7P4pJ0ftzQHT+5EJVn6hs6ywK2lw1M6AfIT2Em+VnNml4ho0PHh2AAvz+wn54ZjtyWrYZDwnVCS93qqMsMrV39cBM8NAqiAvcYE3MMMEgP8nO8zP+8E8cfE3jIcnIpcHSbdKbxWqxSBHp3nvmoFsZH3vNwM/IFsAYvY0Ziq4aH2brqDc75YHZuL7DbXe51gysJ2/N5qmU7FZ0GO3xTxB8XGb4tci/V5VDie6J91GVHqYf63T00x00yC9JuL8nfFXiK7SSY1A1s2f7i53oTAhd4l+9muItQ7iU2w/aM+THlNwJfJT9tTmfhIzx3y8w6417UYA530AeDoS9yUw45gx6FuVZSLwJlpp1NpAJeiBZ4jg9+VkNt8DW/l6MAfJKuuEG+EHNZX+JUEe8TmgcLnsbLCSUD8HKNg9PllOJ889mI="
+
 addons:
   sonarcloud:
     organization: "zero-bs"
@@ -7,5 +17,8 @@ addons:
 
 script:
   - ./gradlew sonarqube
+
 before_install:
   - chmod +x gradlew
+  - docker pull amazon/dynamodb-local:1.16.0
+  - docker run -p 8000:8000 amazon/dynamodb-local
