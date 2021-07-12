@@ -78,6 +78,11 @@ public class DefaultUserManager implements UserManager {
         return user;
     }
 
+    @Override
+    public void delete(Jwt principal) {
+        userRepository.delete(new User(principal));
+    }
+
     private String getUsernameSuggestion() {
         var faker = new Faker(getLocale());
         return faker.superhero().name().replace(" ", "") + "_" + faker.random().hex(4).toLowerCase(getLocale());

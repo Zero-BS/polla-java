@@ -7,4 +7,6 @@ public interface UserManager {
     void add(User user, Jwt principal);
 
     User get();
+
+    void delete(Jwt principal);
 }

@@ -29,4 +29,9 @@ public class UserController {
         if (user == null) throw new CustomRuntimeException(INVALID_USER);
         return user;
     }
+
+    @DeleteMapping
+    public void delete(@AuthenticationPrincipal Jwt principal) {
+        userManager.delete(principal);
+    }
 }
