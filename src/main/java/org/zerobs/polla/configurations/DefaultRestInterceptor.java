@@ -3,8 +3,6 @@ package org.zerobs.polla.configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.zerobs.polla.exception.CustomRuntimeException;
-import org.zerobs.polla.exception.RuntimeExceptionType;
 import org.zerobs.polla.services.UserManager;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +15,8 @@ public class DefaultRestInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if (userManager.get() != null)
+        //if (userManager.get(principal) != null)
             return true;
-        throw new CustomRuntimeException(RuntimeExceptionType.NOT_CREATED_USER);
+        //throw new CustomRuntimeException(RuntimeExceptionType.NOT_CREATED_USER);
     }
 }

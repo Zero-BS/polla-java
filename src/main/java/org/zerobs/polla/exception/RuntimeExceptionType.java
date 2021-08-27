@@ -32,7 +32,8 @@ public enum RuntimeExceptionType {
     SMALL_TAG_NAME_INITIALS("error.small.tag.name.initials", 4022),
     LARGE_TAGS("error.large.tags", 4023),
     INVALID_USER("error.invalid.user", 4024, HttpStatus.NOT_FOUND),
-    NOT_CREATED_USER("error.not.created.user", 4025, HttpStatus.FORBIDDEN);
+    NOT_CREATED_USER("error.not.created.user", 4025, HttpStatus.FORBIDDEN),
+    FAILED_APPLICATION_INIT("error.failed.application.init", 4026, HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String messageTextPropertyId;
     private final int internalCode;

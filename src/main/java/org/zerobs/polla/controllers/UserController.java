@@ -24,8 +24,8 @@ public class UserController {
     }
 
     @GetMapping
-    public User get() {
-        var user = userManager.get();
+    public User get(@AuthenticationPrincipal Jwt principal) {
+        var user = userManager.get(principal);
         if (user == null) throw new CustomRuntimeException(INVALID_USER);
         return user;
     }

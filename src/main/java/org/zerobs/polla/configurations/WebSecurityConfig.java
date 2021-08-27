@@ -1,5 +1,6 @@
 package org.zerobs.polla.configurations;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import static org.springframework.security.oauth2.core.OAuth2TokenValidatorResul
 
 @EnableWebSecurity
 @Configuration
+@Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String GOOGLE_ISSUER_URI = "https://accounts.google.com";
     @Value("${android.google.client.id:}")
@@ -26,11 +28,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${web.google.client.id:}")
     private String webGoogleClientId;
     @Value(("${use.local.db:false}"))
-    private boolean ussLocalDb;
+    private boolean useLocalDb;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+//                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(a -> a.anyRequest().authenticated())
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
     }
@@ -41,7 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 JwtDecoders.fromIssuerLocation(GOOGLE_ISSUER_URI);
 
         jwtDecoder.setJwtValidator(token -> {
-            if (ussLocalDb)
+            log.info("going to validate jwt");
+            if (useLocalDb)
                 return success();
             if (!token.getAudience().contains(webGoogleClientId))
                 return failure(new OAuth2Error("invalid-aud", "invalid aud in token", null));

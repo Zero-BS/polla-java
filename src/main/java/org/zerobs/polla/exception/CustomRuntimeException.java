@@ -10,6 +10,13 @@ public class CustomRuntimeException extends RuntimeException {
     private final String[] args;
 
     public CustomRuntimeException(RuntimeExceptionType runtimeExceptionType) {
-        this(runtimeExceptionType, null);
+        this.runtimeExceptionType = runtimeExceptionType;
+        args = null;
+    }
+
+    public CustomRuntimeException(RuntimeExceptionType runtimeExceptionType, Throwable e) {
+        super(runtimeExceptionType.getMessageTextPropertyId(), e);
+        this.runtimeExceptionType = runtimeExceptionType;
+        args = null;
     }
 }

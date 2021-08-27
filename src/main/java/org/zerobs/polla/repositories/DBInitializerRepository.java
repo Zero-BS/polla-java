@@ -11,7 +11,6 @@ import org.zerobs.polla.entities.db.Tag;
 import org.zerobs.polla.entities.db.User;
 import org.zerobs.polla.utilities.Utils;
 
-import javax.annotation.PostConstruct;
 import java.util.stream.StreamSupport;
 
 import static org.zerobs.polla.constants.ApplicationConstants.TABLE_NAME;
@@ -29,7 +28,7 @@ public class DBInitializerRepository {
     private AmazonDynamoDB amazonDynamoDB;
 
 
-    @PostConstruct
+    //@PostConstruct
     public void initDB() throws InterruptedException {
         TableCollection<ListTablesResult> tables = dynamoDB.listTables();
         var pollaTable = StreamSupport.stream(tables.spliterator(), false)

@@ -10,6 +10,8 @@ spring:
           issuer-uri: https://accounts.google.com
   jackson:
     property-naming-strategy: SNAKE_CASE
+  main:
+    allow-bean-definition-overriding: true
 locale:
   default: en-US
   supported: ${locale.default}, fr-FR #add comma separated values like: ${locale.default}, fr-FR

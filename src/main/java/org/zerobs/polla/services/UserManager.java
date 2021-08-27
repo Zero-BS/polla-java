@@ -6,7 +6,7 @@ import org.zerobs.polla.entities.db.User;
 public interface UserManager {
     void add(User user, Jwt principal);
 
-    User get();
+    User get(Jwt principal);
 
     void delete(Jwt principal);
 }

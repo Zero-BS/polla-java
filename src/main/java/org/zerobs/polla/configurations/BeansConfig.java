@@ -25,7 +25,7 @@ public class BeansConfig {
     @Value("${locale.supported}")
     private List<String> supportedLocaleTags;
     @Value(("${use.local.db:false}"))
-    private boolean ussLocalDb;
+    private boolean useLocalDb;
 
     @Bean
     public LocaleResolver localeResolver() {
@@ -43,7 +43,7 @@ public class BeansConfig {
     public AmazonDynamoDB amazonDynamoDB() {
         AmazonDynamoDBClientBuilder builder = AmazonDynamoDBClientBuilder.standard()
                 .withCredentials(new DefaultAWSCredentialsProviderChain());
-        if (ussLocalDb)
+        if (useLocalDb)
             builder.withEndpointConfiguration(new EndpointConfiguration("http://localhost:8000", "us-west-2"));
         else
             builder.withRegion(Regions.DEFAULT_REGION);
